@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Playermovement : MonoBehaviour
@@ -6,6 +7,15 @@ public class Playermovement : MonoBehaviour
     public Camera Eyes;
 
     public Rigidbody RB;
+
+    public bool Spawn1 = false;
+    public bool Spawn2 = false;
+
+    public bool Victory = false;
+
+    public float Reset = 5;
+
+    //public static bool Sharp;
     
     public float MouseSensitivity = 3;
     public float WalkSpeed = 10;
@@ -54,6 +64,38 @@ public class Playermovement : MonoBehaviour
             //Plug my calculated velocity into the rigidbody
             RB.linearVelocity = move;
         }
+     
+        if (Reset <= 0.01)
+        {
+            Spawn1 = false;
+            Spawn2 = false;
+            transform.position = new Vector3 (0,2.84f,0);
+            TimerScript.Begin = true;
+            Victory = false;
+            Reset = 5;
+        }
+        if(Victory)
+        {
+            TimerScript.Begin = false;
+            Reset -= Time.deltaTime;
+        }
+        // if(Sharp)
+      {
+       
+        //if (Input.GetMouseButtonDown(0))
+       /* {
+          
+           LayerMask layer =LayerMask.GetMask("Target");
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity) )
+            {
+                
+                Debug.Log(hit.collider);
+                Debug.Log(hit.distance);
+                
+            }
+        }*/
+      }
 
     }
     public bool OnGround()
@@ -67,11 +109,55 @@ public class Playermovement : MonoBehaviour
         //Add it to the list
         if (!Floors.Contains(other.gameObject))
             Floors.Add(other.gameObject);
+          if(other.gameObject.CompareTag("Hazard"))
+          {
+            if(Spawn1)
+            {
+                transform.position = new Vector3 (-6.3506f,1.624f,44.225f);
+            }
+            else if(Spawn2)
+            {
+                transform.position = new Vector3 (-37.2317f,2.603f,91.3392f);
+            }
+            else
+            {
+                transform.position = new Vector3 (0,2.84f,0);
+            }
+          }  
     }
 
     private void OnCollisionExit(Collision other)
     {
         //When I stop touching something, remove it from the list of things I'm touching
         Floors.Remove(other.gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //Spawnpoint manager
+        if ( other.gameObject.CompareTag("Spawnpoint"))
+        {
+            Spawn1 = true;
+            Spawn2 = false;
+        }
+        if (other.gameObject.CompareTag("Spawnpoint2"))
+        {
+            Spawn2 = true;
+            Spawn1 = false;
+        }
+        /*if (other.gameObject.CompareTag("Shoot"))
+        {
+            Debug.Log ("works");
+            ShootingScript shot = other.gameObject.GetComponent<ShootingScript>();
+            if(shot != null)
+            {
+                Debug.Log ("works");
+                shot.Shoot();
+            }
+        }*/
+        if( other.gameObject.CompareTag("End"))
+        {
+            Victory = true;
+        }
     }
 }

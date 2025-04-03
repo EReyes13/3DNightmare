@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 3
   tags:
   - Target
+  - Spawnpoint
+  - Hazard
+  - Spawnpoint2
+  - Shoot
+  - End
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -12,7 +18,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Target
   - 
   - 
   - 
